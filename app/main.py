@@ -1,10 +1,23 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from app import models, schemas, crud, database
 
 app = FastAPI()
 
-# Create DB tables
+origins = [
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 models.Base.metadata.create_all(bind=database.engine)
 
 @app.get("/tasks", response_model=List[schemas.Task])
